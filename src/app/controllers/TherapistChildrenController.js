@@ -1,8 +1,7 @@
-import User from "../models/User";
-import TherapistChildren from "../models/Therapist_Children";
-import Family from "../models/Family";
-import FamilyMember from "../models/Family_Member";
-import Children from "../models/Children";
+import User from "../models/User.js";
+import TherapistChildren from "../models/Therapist_Children.js";
+import Family from "../models/Family.js";
+import Children from "../models/Children.js";
 import * as Yup from 'yup';
 
 class TherapistChildrenController {

@@ -2,8 +2,8 @@
 
 import express from 'express';
 import cors from 'cors';
-import routes from './routes';
-import routesSupabase from './app/supabse/supabaseRoutes';
+import routes from './routes.js';
+import routesSupabase from './app/supabse/supabaseRoutes.js';
 
 // Importando nossa database
 import './database';
@@ -12,11 +12,12 @@ import * as dotenv from 'dotenv';
 import multer from 'multer';
 
 import http from 'http';
-import { Server } from 'socket.io';
-import passport from './config/clientGoogle';
 import session from 'express-session';
-import Message from './app/models/Message';
-import User from './app/models/User';
+import { Server } from 'socket.io';
+
+import passport from './config/clientGoogle.js';
+import Message from './app/models/Message.js';
+import User from './app/models/User.js';
 
 dotenv.config();
 

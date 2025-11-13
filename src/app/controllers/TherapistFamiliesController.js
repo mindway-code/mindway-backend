@@ -1,9 +1,10 @@
 import * as Yup from 'yup';
-import TherapistFamilies from '../models/Therapist_Families';
-import Family from '../models/Family';
-import User from '../models/User';
-import FamilyMember from '../models/Family_Member';
-import Children from '../models/Children';
+import TherapistFamilies from '../models/Therapist_Families.js';
+import Family from '../models/Family.js';
+import User from '../models/User.js';
+import FamilyMember from '../models/Family_Member.js';
+import Children from '../models/Children.js';
+
 
 class TherapistFamiliesController {
   async index(req, res) {

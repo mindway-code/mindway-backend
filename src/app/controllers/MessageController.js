@@ -1,6 +1,5 @@
 import * as Yup from 'yup';
 import Message from '../models/Message.js';
-import SocialNetwork from '../models/SocialNetwork.js';
 import User from '../models/User.js';
 
 class MessageController {

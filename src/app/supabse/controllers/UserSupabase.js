@@ -1,6 +1,6 @@
 // src/controllers/UserSupabase.js
 import * as Yup from 'yup';
-import { supabase } from '../../../database/indexSupabase';
+import { supabase } from '../../../database/indexSupabase.js';
 import bcrypt from 'bcryptjs';
 
 class UserSupabaseController {

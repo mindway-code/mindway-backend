@@ -1,6 +1,6 @@
 import { Op } from 'sequelize';
-import User from '../models/User';
-import TherapistUser from '../models/Therapist_User';
+import User from '../models/User.js';
+import TherapistUser from '../models/Therapist_User.js';
 
 
 class TherapistUserController {

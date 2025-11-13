@@ -1,5 +1,5 @@
 import * as Yup from 'yup';
-import Contact from '../models/Contact';
+import Contact from '../models/Contact.js';
 
 class ContactController {
   async index(req, res) {

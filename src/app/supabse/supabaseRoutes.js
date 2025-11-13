@@ -1,13 +1,15 @@
 import { Router } from 'express';
-import UserSupabaseController from './controllers/UserSupabase';
-import authSupabase from './middlewares/authSupabase';
-import SessionSupabaseController from './controllers/SessionSupabase';
-import SocialNetworkSupabaseController from './controllers/SocialNetworkSupabase';
-import SocialNetworkUserSupabaseController from './controllers/SocialNetworkUserSupabase';
-import { supabase } from '../../database/indexSupabase';
-import MessageSupabaseController from './controllers/MessageSupabase';
-import AppointmentSupabaseController from './controllers/AppointmentSupabase';
-import TherapistUserSupabaseController from './controllers/TherapistUserSupabase';
+
+import UserSupabaseController from './controllers/UserSupabase.js';
+import authSupabase from './middlewares/authSupabase.js';
+import SessionSupabaseController from './controllers/SessionSupabase.js';
+import SocialNetworkSupabaseController from './controllers/SocialNetworkSupabase.js';
+import SocialNetworkUserSupabaseController from './controllers/SocialNetworkUserSupabase.js';
+import { supabase } from '../../database/indexSupabase.js';
+import MessageSupabaseController from './controllers/MessageSupabase.js';
+import AppointmentSupabaseController from './controllers/AppointmentSupabase.js';
+import TherapistUserSupabaseController from './controllers/TherapistUserSupabase.js';
+
 
 const routesSupabase = new Router();
 

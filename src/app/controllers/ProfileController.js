@@ -1,5 +1,5 @@
 import * as Yup from 'yup';
-import Profile from '../models/Profile';
+import Profile from '../models/Profile.js';
 
 class ProfileController {
   async index(req, res) {

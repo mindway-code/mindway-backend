@@ -1,30 +1,28 @@
 import { Router } from 'express';
 
-import authMiddleware from './app/middlewares/auth';
-import authAdmin from './app/middlewares/authAdmin';
+import authMiddleware from './app/middlewares/auth.js';
 
-import UserController from './app/controllers/UserController';
-import ProfileController from './app/controllers/ProfileController';
-import ContactController from './app/controllers/ContactController';
-import AddressController from './app/controllers/AddressController';
-import SessionController from './app/controllers/SessionController';
-import passport from './config/clientGoogle';
-import FamilyController from './app/controllers/FamilyController';
-import FamilyMemberController from './app/controllers/FamilyMemberController';
-import ChildrenController from './app/controllers/ChildrenController';
-import authTherapist from './app/middlewares/authTherapist';
-import TherapistFamiliesController from './app/controllers/TherapistFamiliesController';
-import TherapistChildrenController from './app/controllers/TherapistChildrenController';
-import MessageController from './app/controllers/MessageController';
-import SocialNetworkController from './app/controllers/SocialNetworkController';
-import SocialNetworkUserController from './app/controllers/SocialNetworkUserController';
-import User from './app/models/User';
-import Address from './app/models/Address';
-import Contact from './app/models/Contact';
-import UserSupabaseController from './app/supabse/controllers/UserSupabase';
-import SessionSupabaseController from './app/supabse/controllers/SessionSupabase';
-import AppointmentController from './app/controllers/AppointmentController';
-import TherapistUserController from './app/controllers/TherapistUserController';
+import UserController from './app/controllers/UserController.js';
+import ProfileController from './app/controllers/ProfileController.js';
+import ContactController from './app/controllers/ContactController.js';
+import AddressController from './app/controllers/AddressController.js';
+import SessionController from './app/controllers/SessionController.js';
+import passport from './config/clientGoogle.js';
+import FamilyController from './app/controllers/FamilyController.js';
+import FamilyMemberController from './app/controllers/FamilyMemberController.js';
+import ChildrenController from './app/controllers/ChildrenController.js';
+import authTherapist from './app/middlewares/authTherapist.js';
+import TherapistFamiliesController from './app/controllers/TherapistFamiliesController.js';
+import TherapistChildrenController from './app/controllers/TherapistChildrenController.js';
+import MessageController from './app/controllers/MessageController.js';
+import SocialNetworkController from './app/controllers/SocialNetworkController.js';
+import SocialNetworkUserController from './app/controllers/SocialNetworkUserController.js';
+import User from './app/models/User.js';
+import Address from './app/models/Address.js';
+import Contact from './app/models/Contact.js';
+import AppointmentController from './app/controllers/AppointmentController.js';
+import TherapistUserController from './app/controllers/TherapistUserController.js';
+
 
 const routes = new Router();
 

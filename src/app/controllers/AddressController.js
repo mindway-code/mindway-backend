@@ -1,5 +1,5 @@
 import * as Yup from 'yup';
-import Address from '../models/Address';
+import Address from '../models/Address.js';
 
 class AddressController {
   async index(req, res) {

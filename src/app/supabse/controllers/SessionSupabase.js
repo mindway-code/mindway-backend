@@ -1,7 +1,7 @@
 // src/supabase/controllers/SessionSupabase.js
 import jwt from 'jsonwebtoken';
 import * as Yup from 'yup';
-import authConfig from '../../../config/auth';
+import authConfig from '../../../config/auth.js';
 import bcrypt from 'bcryptjs';
 import { supabase } from '../../../database/indexSupabase.js';
 

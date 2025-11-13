@@ -1,11 +1,11 @@
 import * as Yup from 'yup';
-import User from '../models/User';
-import Contact from '../models/Contact';
-import Address from '../models/Address';
-import Profile from '../models/Profile';
-import { use } from 'passport';
-import Contact from './../models/Contact';
-import { Op, Sequelize } from 'sequelize';
+
+import User from '../models/User.js';
+import Contact from '../models/Contact.js';
+import Address from '../models/Address.js';
+import Profile from '../models/Profile.js';
+
+import { Op } from 'sequelize';
 import sequelize from '../../config/sequelize';
 import * as dotenv from 'dotenv';
 import bcrypt from 'bcryptjs/dist/bcrypt';

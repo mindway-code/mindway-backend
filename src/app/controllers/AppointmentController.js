@@ -1,7 +1,7 @@
 import * as Yup from 'yup';
 import { Op } from 'sequelize';
-import Appointment from '../models/Appointment';
-import User from '../models/User';
+import Appointment from '../models/Appointment.js';
+import User from '../models/User.js';
 
 
 class AppointmentController {
