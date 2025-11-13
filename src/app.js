@@ -39,11 +39,14 @@ async function  fetchMessages(socket , socialNetworkId, limit, offset) {
 }
 
 const corsOptions = {
-    origin: 'http://localhost:4207',
-    methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
-    credentials: true,
-    allowedHeaders: ['Content-Type', 'Authorization'],
-    maxAge: 86400,
+  origin: [
+    'http://localhost:4207',
+    'https://mindway-frontend.netlify.app'
+  ],
+  methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
+  credentials: true,
+  allowedHeaders: ['Content-Type', 'Authorization'],
+  maxAge: 86400,
 };
 
 class App {
