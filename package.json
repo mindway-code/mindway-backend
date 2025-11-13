@@ -1,7 +1,7 @@
 {
   "name": "mindway-backend",
   "version": "0.0.0",
-  "main": "index.js",
+  "main": "app.js",
   "scripts": {
     "dev": "nodemon src/server.js"
   },
