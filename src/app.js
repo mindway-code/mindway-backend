@@ -6,7 +6,7 @@ import routes from './routes.js';
 import routesSupabase from './app/supabse/supabaseRoutes.js';
 
 // Importando nossa database
-import './database';
+import './database/index.js';
 
 import * as dotenv from 'dotenv';
 import multer from 'multer';
