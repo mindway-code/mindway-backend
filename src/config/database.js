@@ -18,3 +18,17 @@ module.exports = {
     underscoredAll: true,
   },
 };
+
+// module.exports = {
+//   dialect: 'postgres',
+//   host: 'db.tpoczqeajbetvmqxheqv.supabase.co',
+//   username: 'postgres',
+//   password: 'db_mindway123',
+//   database: 'postgres',
+//   PORT: 5432,
+//   define: {
+//     timestamps: true,
+//     underscored: true,
+//     underscoredAll: true,
+//   },
+// };

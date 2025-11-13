@@ -3,6 +3,7 @@
 import express from 'express';
 import cors from 'cors';
 import routes from './routes';
+import routesSupabase from './app/supabse/supabaseRoutes';
 
 // Importando nossa database
 import './database';
@@ -12,14 +13,33 @@ import multer from 'multer';
 
 import http from 'http';
 import { Server } from 'socket.io';
-import jwt from 'jsonwebtoken'; // Instale com: npm install jsonwebtoken
-import passport from './config/clientGoogle'; // Importe a configuração do Passport
-import session from 'express-session'; // Para utilizar sessões
+import passport from './config/clientGoogle';
+import session from 'express-session';
+import Message from './app/models/Message';
+import User from './app/models/User';
 
 dotenv.config();
 
+
+async function  fetchMessages(socket , socialNetworkId, limit, offset) {
+  return Message.findAll({
+    where: { social_network_id: socialNetworkId },
+    order: [['created_at', 'DESC']],
+    attributes: ['id', 'user_id', 'content', 'created_at'],
+    include: [
+      {
+        model: User,
+        as: 'user',
+        attributes: ['name', 'surname', 'email']
+      }
+    ],
+    limit,
+    offset,
+  });
+}
+
 const corsOptions = {
-    origin: 'http://localhost:4207', // Substitua pela origem específica do seu frontend Angular
+    origin: 'http://localhost:4207',
     methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
     credentials: true,
     allowedHeaders: ['Content-Type', 'Authorization'],
@@ -32,6 +52,8 @@ class App {
 
         this.middlewares();
         this.routes();
+        this.routesSupabase();
+        this.io = null;
     }
 
     middlewares() {
@@ -56,74 +78,118 @@ class App {
           },
       });
 
-        // Middleware para lidar com dados de formulário multipart
         this.app.use(upload.array('anexos[]'));
     }
 
     routes() {
-        this.app.use(routes);
+      this.app.use(routes);
+    }
+
+    routesSupabase() {
+      this.app.use(routesSupabase);
     }
 
     listen(port, callback) {
-        // Crie um servidor HTTP a partir do Express app
+
         const httpServer = http.createServer(this.app);
 
-        // Inicialize o Socket.io no servidor HTTP
-        const io = new Server(httpServer, {
+        this.io = new Server(httpServer, {
           cors: {
-            origin: 'http://localhost:4207', // Substitua pela origem específica do seu frontend Angular
+            origin: ['http://localhost:4207', 'https://amritb.github.io/socketio-client-tool/'],
             methods: ['GET', 'POST'],
             allowedHeaders: ['Content-Type', 'Authorization'],
             credentials: true,
           },
         });
 
+        this.startSocketListeners();
 
-
-        // Defina eventos do Socket.io
-        io.on('connection', (socket) => {
-          console.log(`Usuário conectado: ${socket.id}`);
-
-          // Envie o menu inicial quando o usuário se conecta
-          const welcomeMessage = {
-            user: 'Assistente',
-            message: `Olá! 😊 Como posso ajudar você hoje? Escolha uma das opções abaixo:
-
-                        1.\n\n Agendamento\n
-                        2. Suporte Técnico\n
-                        3. Falar com um atendente\n
-                        4. Horário de Funcionamento`,
-            timestamp: new Date(),
-            isAssistant: true,
-          };
-          console.log('Enviando mensagem do assistente:', welcomeMessage.message);
-          socket.emit('receive_message', welcomeMessage);
-
-          // Escuta por mensagens enviadas pelo cliente
-          socket.on('send_message', (data) => {
-            console.log(`Mensagem recebida de ${socket.id}:`, data);
-            const userMessage = {
-              user: data.user,
-              message: data.message,
-              timestamp: new Date(),
-              isAssistant: false,
-            };
-            // io.emit('receive_message', userMessage);
-            //console.log('Enviando mensagem do usuário:', userMessage.message);
-
-            // Lógica do assistente para responder ao usuário
-            this.handleAssistantResponse(data, socket, io);
-          });
-
-          // Escuta o evento de desconexão
-          socket.on('disconnect', () => {
-            console.log(`Cliente desconectado: ${socket.id}`);
-          });
-        });
-
-        // Inicie o servidor HTTP
         httpServer.listen(port, callback);
     }
+
+    startSocketListeners() {
+      this.io.on('connection', (socket) => {
+        console.log('Usuário conectado: ' + socket.id);
+
+        socket.on('leaveSocialNetwork', ({ socialNetworkId, userId }) => {
+          this.leaveSocialNetwork(socket, socialNetworkId, userId);
+        });
+
+        socket.on('joinSocialNetwork', ({ socialNetworkId, userId }) => {
+          this.joinSocialNetwork(socket, socialNetworkId, userId);
+        });
+
+        socket.on('message', ({ socialNetworkId, userId, content }) => {
+          this.handleMessage(socket, socialNetworkId, userId, content);
+        });
+
+        socket.on('disconnect', () => {
+          console.log('Usuário desconectado: ' + socket.id);
+        });
+      });
+    }
+
+    leaveSocialNetwork(socket, socialNetworkId, userId) {
+      socket.leave(`social_${socialNetworkId}`);
+
+      socket.to(`social_${socialNetworkId}`).emit('userLeft', { userId });
+    }
+
+    async joinSocialNetwork(socket, socialNetworkId, userId, limit = 10, offset = 0 ) {
+      const currentSocialNetwork = {};
+      // Sair da sala anterior, se houver
+      const previousRoom = currentSocialNetwork[socket.id];
+      if (previousRoom && previousRoom !== `social_${socialNetworkId}`) {
+        socket.leave(previousRoom);
+        socket.to(previousRoom).emit('userLeft', { userId });
+      }
+
+      // Entrar na nova sala
+      const newRoom = `social_${socialNetworkId}`;
+      socket.join(newRoom);
+      currentSocialNetwork[socket.id] = newRoom;
+
+      console.log('UserId: ', userId);
+      try {
+        const messages = await fetchMessages(socket, socialNetworkId, limit, offset);
+
+        socket.emit('messageHistory', messages);
+      } catch (err) {
+        console.error('Erro ao buscar histórico:', err.message);
+        socket.emit('errorLoadingHistory', { message: 'Erro ao carregar histórico.' });
+      }
+
+      socket.emit('joinedSocialNetwork', { socialNetworkId });
+      console.log(`User ${userId} joined ${newRoom}`);
+    }
+
+
+    handleMessage(socket, socialNetworkId, userId, content) {
+      const createdAt = new Date();
+
+      console.log('Teste do id: ', userId)
+
+      this.io.to(`social_${socialNetworkId}`).emit('message', {
+        user_id: userId,
+        content,
+        created_at: createdAt
+      });
+
+      setTimeout(async () => {
+        try {
+          await Message.create({
+            social_network_id: socialNetworkId,
+            user_id: userId,
+            content,
+            created_at: createdAt
+          });
+
+        } catch (err) {
+          console.error('Erro ao salvar mensagem:', err.message);
+        }
+      }, 500);
+    }
+
 
     /**
      * Função para gerenciar as respostas do assistente com base na mensagem do usuário

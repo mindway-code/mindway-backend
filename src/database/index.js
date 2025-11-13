@@ -9,9 +9,16 @@ import FamilyMember from '../app/models/Family_Member';
 import Children from '../app/models/Children';
 import TherapistChildren from '../app/models/Therapist_Children';
 import TherapistFamilies from '../app/models/Therapist_Families';
+import SocialNetwork from '../app/models/SocialNetwork';
+import SocialNetworkUser from '../app/models/SocialNetworkUser';
+import Message from '../app/models/Message';
+import Appointment from '../app/models/Appointment';
+import TherapistUser from '../app/models/Therapist_User';
 
 const models = [
-  User, Address, Contact, Profile, Family, FamilyMember, Children, TherapistChildren, TherapistFamilies
+  User, Address, Contact, Profile, Family, FamilyMember, Children,
+  TherapistChildren, TherapistFamilies,
+  SocialNetwork, SocialNetworkUser, Message, Appointment, TherapistUser
 ];
 
 class Database {

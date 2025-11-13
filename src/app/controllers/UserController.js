@@ -5,7 +5,7 @@ import Address from '../models/Address';
 import Profile from '../models/Profile';
 import { use } from 'passport';
 import Contact from './../models/Contact';
-import { Sequelize } from 'sequelize';
+import { Op, Sequelize } from 'sequelize';
 import sequelize from '../../config/sequelize';
 import * as dotenv from 'dotenv';
 import bcrypt from 'bcryptjs/dist/bcrypt';
@@ -22,19 +22,33 @@ class UserController {
 
       const offset = (page - 1)*pageSize;
 
+      let where = {};
+      if (req.query.name && req.query.name.trim() !== '') {
+        where = {
+          ...where,
+          name: { [Op.iLike]: `%${req.query.name.trim()}%` }
+        };
+      }
+
       const { count, rows: users } = await User.findAndCountAll({
         attributes: ['id', 'name', 'surname', 'email'],
+        where,
         include: [
           {
-            association: 'profile',
+            model: Profile,
+            as: 'profile',
             attributes: ['id', 'name']
           },
           {
-            association: 'contact',
+            model: Contact,
+            as: 'contact',
+            attributes: ['id', 'telephone', 'smartphone']
           },
-          {
-            association: 'address',
-          },
+          // {
+          //   model: Address,
+          //   as: 'address',
+          //   attributes: ['address_name', 'country', 'state', 'city', 'cep']
+          // }
 
         ],
         limit: pageSize,
@@ -49,8 +63,12 @@ class UserController {
         totalUsers: count,
         users,
       });
+
     } catch (error) {
-      return res.status(500).json({ error: 'Erro ao buscar usuários.' });
+      return res.status(500).json({
+        error: 'Erro ao buscar usuários.',
+        details: error.message
+      });
     }
   }
 
@@ -76,9 +94,9 @@ class UserController {
         });
         console.log('Usuário não encontrado, criando novo usuário:', userGoogle);
 
-        return res.json(userGoogle);
+        return res.redirect('http://localhost:4207');
       }
-      return res.json(userGoogle);
+        return res.redirect('http://localhost:4207');
     }
     catch (err) {
       console.error(err);
@@ -258,17 +276,20 @@ class UserController {
       const user = await User.findByPk(req.params.id, {
         include: [
           {
-            association: 'address',
-            attributes: ['id', 'address_name', 'country', 'state', 'city', 'cep'],
+            model: Profile,
+            as: 'address',
+            attributes: ['id', 'name']
           },
           {
-            association: 'contact',
-            attributes: ['id', 'telephone', 'smartphone'],
+            model: Contact,
+            as: 'address',
+            attributes: ['id', 'telephone', 'smartphone']
           },
           {
-            association: 'profile',
-            attributes: ['id', 'name'],
-          },
+            model: Address,
+            as: 'address',
+            attributes: ['address_name', 'country', 'state', 'city', 'cep']
+          }
         ],
       });
 

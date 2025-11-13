@@ -4,13 +4,14 @@ import Profile from '../models/Profile';
 class ProfileController {
   async index(req, res) {
     try {
-      const profiles = await Profile.findAll({
-        attributes: ['id', 'name'],
-      });
+      const profiles = await Profile.findAll();
 
       return res.json(profiles);
     } catch (error) {
-      return res.status(500).json({ error: 'Erro ao buscar perfis.' });
+      return res.status(500).json({
+          error: 'Erro ao buscar perfis.',
+          details: error.message,
+        });
     }
   }
 
