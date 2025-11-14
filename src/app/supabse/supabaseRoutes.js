@@ -16,18 +16,18 @@ const routesSupabase = new Router();
 
 
 //================ SessionSupabase =================
-routesSupabase.post('/login-supabase', SessionSupabaseController.store);
+routesSupabase.post('/login', SessionSupabaseController.store);
 
 //================== UserSupabase ======================
 routesSupabase.post('/users', UserSupabaseController.store);
-routesSupabase.get('/users', UserSupabaseController.index);
+routesSupabase.get('/users', authSupabase, UserSupabaseController.index);
 routesSupabase.get('/users/:id', authSupabase, UserSupabaseController.getUserById);
 routesSupabase.put('/users/:id', authSupabase, UserSupabaseController.updateData);
 routesSupabase.delete('/users/:id', authSupabase, UserSupabaseController.deleteTransaction);
 
 //================== SocialNetwork ======================
 routesSupabase.post('/social-networks', authSupabase, SocialNetworkSupabaseController.store);
-routesSupabase.get('/social-networks', authSupabase, SocialNetworkSupabaseController.indexByUser);
+routesSupabase.get('/social-networks/user', authSupabase, SocialNetworkSupabaseController.indexByUser);
 routesSupabase.post('/social-networks/user', authSupabase, SocialNetworkSupabaseController.storeByUser);
 routesSupabase.put('/social-networks/:id', authSupabase, SocialNetworkSupabaseController.update);
 routesSupabase.delete('/social-networks/:id', authSupabase, SocialNetworkSupabaseController.delete);
@@ -45,19 +45,17 @@ routesSupabase.delete('/messages/:id', authSupabase, MessageSupabaseController.d
 //================== Appointment ======================
 routesSupabase.get('/appointments/patient', authSupabase, AppointmentSupabaseController.indexByPatient);
 routesSupabase.get('/appointments/therapist', authSupabase, AppointmentSupabaseController.indexByTherapist);
-routesSupabase.post('/appointments', authSupabase, AppointmentSupabaseController.store);
+routesSupabase.get('/appointments/therapist-date', authSupabase, AppointmentSupabaseController.indexByTherapistAndDate );
+routesSupabase.get('/appointments/date', authSupabase, AppointmentSupabaseController.indexByDate);
+routesSupabase.post('/appointments/create', authSupabase, AppointmentSupabaseController.store);
 routesSupabase.put('/appointments/:id', authSupabase, AppointmentSupabaseController.update);
 routesSupabase.delete('/appointments/:id', authSupabase, AppointmentSupabaseController.delete);
 
 //================== TherapistUser ======================
-routesSupabase.get('/therapist-user', authSupabase, TherapistUserSupabaseController.indexAssociated);
+routesSupabase.get('/therapist-user/associated', authSupabase, TherapistUserSupabaseController.indexAssociated);
 routesSupabase.post('/therapist-user', authSupabase, TherapistUserSupabaseController.store);
 routesSupabase.put('/therapist-user/:id', authSupabase, TherapistUserSupabaseController.update);
 routesSupabase.delete('/therapist-user/:id', authSupabase, TherapistUserSupabaseController.delete);
-
-
-//================== SocialNetworkSupabase ======================
-routesSupabase.get('/socialNetwork/user', authSupabase, SocialNetworkSupabaseController.indexByUser);
 
 
 //================== getMe ======================

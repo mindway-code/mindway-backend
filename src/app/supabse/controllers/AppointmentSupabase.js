@@ -133,6 +133,108 @@ class AppointmentSupabaseController {
   }
 
 
+  async indexByTherapistAndDate(req, res) {
+    try {
+      const therapistId =
+        req.query.therapist_id ||
+        req.params.therapist_id ||
+        req.userIdSupabase ||
+        req.userId;
+      const date = req.query.date;
+
+      if (!therapistId || !date) {
+        return res.status(400).json({ error: 'therapist_id e date são obrigatórios.' });
+      }
+
+      const { data: appointments, error } = await supabase
+        .from('appointments')
+        .select(`
+          id,
+          date,
+          time,
+          status,
+          note,
+          patient_id,
+          patient:users!appointments_patient_id_fkey (id, name, surname)
+        `)
+        .eq('provider_id', therapistId)
+        .eq('date', date)
+        .order('time', { ascending: true });
+
+      if (error) {
+        return res.status(500).json({
+          error: 'Erro ao buscar agendamentos do terapeuta nessa data.',
+          details: error.message
+        });
+      }
+
+      return res.json({ data: appointments });
+
+    } catch (error) {
+      console.error(error);
+      return res.status(500).json({
+        error: 'Erro ao buscar agendamentos do terapeuta nessa data.',
+        details: error.message
+      });
+    }
+  }
+
+
+  async indexByDate(req, res) {
+    try {
+      const { date } = req.query;
+      const page     = Number(req.query.page)      || 1;
+      const pageSize = Number(req.query.pageSize)  || 10;
+      const from     = (page - 1) * pageSize;
+      const to       = from + pageSize - 1;
+
+      if (!date) {
+        return res.status(400).json({ error: 'Data é obrigatória para buscar agendamentos.' });
+      }
+
+      const { data: appointments, count, error } = await supabase
+        .from('appointments')
+        .select(`
+          id,
+          date,
+          time,
+          status,
+          note,
+          patient:users!appointments_patient_id_fkey (id, name, surname),
+          provider:users!appointments_provider_id_fkey (id, name, surname)
+        `, { count: 'exact', head: false })
+        .eq('date', date)
+        .order('time', { ascending: true })
+        .range(from, to);
+
+      if (error) {
+        return res.status(500).json({
+          error: 'Erro ao buscar agendamentos por data.',
+          details: error.message
+        });
+      }
+
+      return res.json({
+        data: appointments,
+        meta: {
+          totalItems: count,
+          totalPages: Math.ceil(count / pageSize),
+          currentPage: page,
+          perPage: pageSize,
+        }
+      });
+
+    } catch (error) {
+      console.log(error.message);
+      return res.status(500).json({
+        error: 'Erro ao buscar agendamentos por data.',
+        details: error.message
+      });
+    }
+  }
+
+
+
   async store(req, res) {
     const schema = Yup.object().shape({
       patient_id: Yup.string().required(),
