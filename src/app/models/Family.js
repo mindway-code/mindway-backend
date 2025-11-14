@@ -1,6 +1,4 @@
 import Sequelize, { Model } from 'sequelize';
-import { FamilyMember } from './../../../../frontend/src/app/api/interfaces/family-member';
-import Children from './Children';
 
 class Family extends Model {
   static init(sequelize) {
