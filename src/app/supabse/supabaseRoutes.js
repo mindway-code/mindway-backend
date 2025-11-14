@@ -20,7 +20,7 @@ routesSupabase.post('/login-supabase', SessionSupabaseController.store);
 
 //================== UserSupabase ======================
 routesSupabase.post('/users', UserSupabaseController.store);
-routesSupabase.get('/users', authSupabase, UserSupabaseController.index);
+routesSupabase.get('/users', UserSupabaseController.index);
 routesSupabase.get('/users/:id', authSupabase, UserSupabaseController.getUserById);
 routesSupabase.put('/users/:id', authSupabase, UserSupabaseController.updateData);
 routesSupabase.delete('/users/:id', authSupabase, UserSupabaseController.deleteTransaction);
