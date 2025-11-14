@@ -87,7 +87,7 @@ class App {
     }
 
     routesSupabase() {
-      this.app.use(routesSupabase);
+      this.app.use('/supabase',routesSupabase);
     }
 
     listen(port, callback) {
