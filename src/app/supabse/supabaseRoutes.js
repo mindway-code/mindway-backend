@@ -52,10 +52,10 @@ routesSupabase.put('/appointments/:id', authSupabase, AppointmentSupabaseControl
 routesSupabase.delete('/appointments/:id', authSupabase, AppointmentSupabaseController.delete);
 
 //================== TherapistUser ======================
-routesSupabase.get('/therapist-user/associated', authSupabase, TherapistUserSupabaseController.indexAssociated);
-routesSupabase.post('/therapist-user', authSupabase, TherapistUserSupabaseController.store);
-routesSupabase.put('/therapist-user/:id', authSupabase, TherapistUserSupabaseController.update);
-routesSupabase.delete('/therapist-user/:id', authSupabase, TherapistUserSupabaseController.delete);
+routesSupabase.get('/therapist-users/associated', authSupabase, TherapistUserSupabaseController.indexAssociated);
+routesSupabase.post('/therapist-users', authSupabase, TherapistUserSupabaseController.store);
+routesSupabase.put('/therapist-users/:id', authSupabase, TherapistUserSupabaseController.update);
+routesSupabase.delete('/therapist-users/:id', authSupabase, TherapistUserSupabaseController.delete);
 
 
 //================== getMe ======================
