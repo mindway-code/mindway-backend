@@ -3,7 +3,7 @@ import { supabase } from '../../../database/indexSupabase.js';
 class AppointmentSupabaseController {
   async indexByPatient(req, res) {
     try {
-      const userId   = req.userIdSupabase || req.userId;
+      const userId   = req.userIdSupabase  ;
       const page     = Number(req.query.page)      || 1;
       const pageSize = Number(req.query.pageSize)  || 10;
       const from     = (page - 1) * pageSize;
@@ -57,7 +57,7 @@ class AppointmentSupabaseController {
 
   async indexByTherapist(req, res) {
     try {
-      const userId   = req.userIdSupabase || req.userId; // adapte conforme middleware
+      const userId   = req.userIdSupabase  ; // adapte conforme middleware
       const page     = Number(req.query.page)      || 1;
       const pageSize = Number(req.query.pageSize)  || 10;
       const from     = (page - 1) * pageSize;
@@ -247,8 +247,8 @@ class AppointmentSupabaseController {
 
     try {
       // Preenche patient_id/provider_id com userId autenticado, se vier null
-      if (req.body.patient_id === null) req.body.patient_id = req.userIdSupabase || req.userId;
-      if (req.body.provider_id === null) req.body.provider_id = req.userIdSupabase || req.userId;
+      if (req.body.patient_id === null) req.body.patient_id = req.userIdSupabase  ;
+      if (req.body.provider_id === null) req.body.provider_id = req.userIdSupabase  ;
 
       await schema.validate(req.body);
 

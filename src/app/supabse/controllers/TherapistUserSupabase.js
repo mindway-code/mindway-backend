@@ -3,7 +3,7 @@ import { supabase } from '../../../database/indexSupabase.js';
 class TherapistUserSupabaseController {
   async indexAssociated(req, res) {
     try {
-      const userId = req.userIdSupabase || req.userId; // ajuste conforme seu middleware
+      const userId = req.userIdSupabase;
 
       // Busca as associações deste usuário, trazendo dados do terapeuta
       const { data: associations, error } = await supabase
@@ -32,7 +32,7 @@ class TherapistUserSupabaseController {
   async store(req, res) {
     try {
 
-      const therapist_id = req.userIdSupabase || req.userId;
+      const therapist_id = req.userIdSupabase  ;
       const { user_id } = req.body;
 
       if (!therapist_id) {
