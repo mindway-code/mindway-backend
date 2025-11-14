@@ -19,7 +19,7 @@ const routesSupabase = new Router();
 routesSupabase.post('/login', SessionSupabaseController.store);
 
 //================== UserSupabase ======================
-routesSupabase.post('/users', UserSupabaseController.store);
+routesSupabase.post('/register', UserSupabaseController.store);
 routesSupabase.get('/users', authSupabase, UserSupabaseController.index);
 routesSupabase.get('/users/:id', authSupabase, UserSupabaseController.getUserById);
 routesSupabase.put('/users/:id', authSupabase, UserSupabaseController.updateData);
