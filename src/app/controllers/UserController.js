@@ -6,7 +6,7 @@ import Address from '../models/Address.js';
 import Profile from '../models/Profile.js';
 
 import { Op } from 'sequelize';
-import sequelize from '../../config/sequelize';
+import sequelize from '../../config/sequelize.js';
 import * as dotenv from 'dotenv';
 import bcrypt from 'bcryptjs/dist/bcrypt';
 import { v4 as uuidv4 } from 'uuid';
