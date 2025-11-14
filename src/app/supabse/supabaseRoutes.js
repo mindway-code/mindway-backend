@@ -9,11 +9,15 @@ import { supabase } from '../../database/indexSupabase.js';
 import MessageSupabaseController from './controllers/MessageSupabase.js';
 import AppointmentSupabaseController from './controllers/AppointmentSupabase.js';
 import TherapistUserSupabaseController from './controllers/TherapistUserSupabase.js';
+import authTherapistSupabase from './middlewares/authTherapistSupabase.js';
 
 
 const routesSupabase = new Router();
 
 
+routesSupabase.get('/auth/therapist', authTherapistSupabase, (req, res) => {
+  return res.status(200).json({ message: 'Acesso autorizado para terapeuta.' });
+});
 
 //================ SessionSupabase =================
 routesSupabase.post('/login', SessionSupabaseController.store);
@@ -33,9 +37,9 @@ routesSupabase.put('/social-networks/:id', authSupabase, SocialNetworkSupabaseCo
 routesSupabase.delete('/social-networks/:id', authSupabase, SocialNetworkSupabaseController.delete);
 
 //================== SocialNetworkUser ======================
-routesSupabase.get('/social-network-user', authSupabase, SocialNetworkUserSupabaseController.index);
-routesSupabase.post('/social-network-user', authSupabase, SocialNetworkUserSupabaseController.store);
-routesSupabase.delete('/social-network-user/:id', authSupabase, SocialNetworkUserSupabaseController.delete);
+routesSupabase.get('/social-network-users', authSupabase, SocialNetworkUserSupabaseController.index);
+routesSupabase.post('/social-network-users', authSupabase, SocialNetworkUserSupabaseController.store);
+routesSupabase.delete('/social-network-users/:id', authSupabase, SocialNetworkUserSupabaseController.delete);
 
 //================== Message ======================
 routesSupabase.get('/messages', authSupabase, MessageSupabaseController.index);

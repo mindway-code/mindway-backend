@@ -96,10 +96,11 @@ class App {
 
         this.io = new Server(httpServer, {
           cors: {
-            origin: ['http://localhost:4207', 'https://amritb.github.io/socketio-client-tool/'],
-            methods: ['GET', 'POST'],
+            origin: '*',
+            methods: ['GET', 'POST', 'PUT', 'DELETE'],
             allowedHeaders: ['Content-Type', 'Authorization'],
             credentials: true,
+            maxAge: 86400,
           },
         });
 

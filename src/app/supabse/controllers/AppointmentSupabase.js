@@ -18,8 +18,8 @@ class AppointmentSupabaseController {
           time,
           status,
           note,
-          patient:users!appointments_patient_id_fkey (id, name, surname),
-          provider:users!appointments_provider_id_fkey (id, name, surname)
+          patient:users!fk_appointments_patient (id, name, surname),
+          provider:users!fk_appointments_provider (id, name, surname)
         `, { count: 'exact', head: false })
         .eq('patient_id', userId)
         .order('date', { ascending: false })
@@ -49,7 +49,8 @@ class AppointmentSupabaseController {
       console.log(error.message)
       return res.status(500).json({
         error: 'Erro ao buscar agendamentos do usuário.',
-        details: error.message
+        details: error.message,
+        id: req.userIdSupabase
       });
     }
   }

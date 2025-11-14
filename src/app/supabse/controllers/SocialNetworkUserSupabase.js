@@ -14,7 +14,7 @@ class SocialNetworkUserSupabaseController {
         .from('social_network_user')
         .select(`
           id,
-          social_network: social_networks (id, name, description),
+          social_network: social_network (id, name, description),
           user: users (id, name, surname, email, profile_id)
         `, { count: 'exact', head: false })
         .order('id', { ascending: true }) // ordenação padrão

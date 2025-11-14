@@ -9,13 +9,13 @@ module.exports = {
         autoIncrement: true,
         allowNull: false,
       },
-      user_id: {
+      patient_id: {
         type: Sequelize.INTEGER,
-        allowNull: false,
+        allowNull: false, // referência com a tabela users com user_id
       },
       provider_id: {
         type: Sequelize.INTEGER,
-        allowNull: false,
+        allowNull: false, // referência com a tabela users com user_id
       },
       date: {
         type: Sequelize.DATE,
@@ -25,7 +25,7 @@ module.exports = {
         type: Sequelize.STRING,
         allowNull: false,
       },
-      notes: {
+      note: {
         type: Sequelize.STRING,
         allowNull: true,
       },
