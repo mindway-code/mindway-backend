@@ -132,7 +132,7 @@ class UserController {
       });
 
       // Opcional: recarregar usuário com associações se necessário
-      const createdUser = await User.findByPk(user.id, {
+      await User.findByPk(user.id, {
         include: [
           {
             association: 'profile',
@@ -149,14 +149,25 @@ class UserController {
         ]
       });
 
+      const checkUser = await User.findOne({ where: { email: user.email } });
+
+      if (!checkUser) {
+        return res.status(401).json({ error: 'Usuário não encontrado' });
+      }
+
+      if (!(await checkUser.checkPassword(password))) {
+        return res.status(401).json({ error: 'Senha incorreta' });
+      }
+
+      const { id, name, surname, profile_id } = checkUser;
+
+      const token = jwt.sign({ id, profile_id }, authConfig.secret, {
+        expiresIn: authConfig.expiresIn,
+      });
+
       return res.json({
-        id: createdUser.id,
-        name: createdUser.name,
-        surname: createdUser.surname,
-        email: createdUser.email,
-        profile: createdUser.profile,
-        address: createdUser.address,
-        contact: createdUser.contact,
+        user: { id, name, surname, email, profile_id },
+        token,
       });
 
     }
@@ -164,7 +175,6 @@ class UserController {
       console.error(error);
       return res.status(500).json({ message: 'Erro ao criar usuário.' });
     }
-
   }
 
 

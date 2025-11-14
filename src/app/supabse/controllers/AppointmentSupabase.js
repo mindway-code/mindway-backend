@@ -1,5 +1,5 @@
 import { supabase } from '../../../database/indexSupabase.js';
-
+import * as Yup from 'yup';
 class AppointmentSupabaseController {
   async indexByPatient(req, res) {
     try {
@@ -75,10 +75,10 @@ class AppointmentSupabaseController {
           time,
           status,
           note,
-          patient:users!appointments_patient_id_fkey (
+          patient:users!fk_appointments_patient (
             id, name, surname
           ),
-          provider:users!appointments_provider_id_fkey (
+          provider:users!fk_appointments_provider (
             id, name, surname
           )
         `, { count: 'exact', head: false })
@@ -156,7 +156,7 @@ class AppointmentSupabaseController {
           status,
           note,
           patient_id,
-          patient:users!appointments_patient_id_fkey (id, name, surname)
+          patient:users!fk_appointments_patient (id, name, surname)
         `)
         .eq('provider_id', therapistId)
         .eq('date', date)
@@ -201,8 +201,8 @@ class AppointmentSupabaseController {
           time,
           status,
           note,
-          patient:users!appointments_patient_id_fkey (id, name, surname),
-          provider:users!appointments_provider_id_fkey (id, name, surname)
+          patient:users!fk_appointments_patient (id, name, surname),
+          provider:users!fk_appointments_provider (id, name, surname)
         `, { count: 'exact', head: false })
         .eq('date', date)
         .order('time', { ascending: true })
@@ -275,7 +275,10 @@ class AppointmentSupabaseController {
       return res.status(201).json(appointment);
 
     } catch (error) {
-      return res.status(400).json({ error: error.errors ? error.errors[0] : error.message || 'Erro ao criar agendamento.' });
+      return res.status(400).json({
+        error: 'Erro ao criar agendamento.',
+        details: error.message
+      });
     }
   }
 

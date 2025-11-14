@@ -2,7 +2,7 @@
 import * as Yup from 'yup';
 import { supabase } from '../../../database/indexSupabase.js';
 import bcrypt from 'bcryptjs';
-
+import jwt from 'jsonwebtoken';
 class UserSupabaseController {
   async index(req, res) {
     try {
@@ -49,10 +49,8 @@ class UserSupabaseController {
     }
   }
 
-
   async store(req, res) {
     try {
-
       const schema = Yup.object().shape({
         name: Yup.string().required(),
         surname: Yup.string().required(),
@@ -64,31 +62,31 @@ class UserSupabaseController {
       });
 
       if (!(await schema.isValid(req.body))) {
-        return res.status(400).json({ error: 'Validação falhou 2' });
+        return res.status(400).json({ error: 'Validação falhou' });
       }
 
+      // Verifica se já existe usuário com este e-mail
       const { data: userExists, error: findError } = await supabase
         .from('users')
         .select('id')
         .eq('email', req.body.email)
         .maybeSingle();
-      if (findError) {
-        throw findError;
-      }
+      if (findError) throw findError;
+
       if (userExists) {
         return res.status(400).json({ error: 'Usuário já existe' });
       }
 
-      const { name, surname, email, password } = req.body;
+      // Cria hash da senha
+      const password_hash = await bcrypt.hash(req.body.password, 8);
 
-      const password_hash = await bcrypt.hash(password, 8);
-
-      const { data: created, error: createError } = await supabase
+      // Cria usuário
+      const { data: user, error: createError } = await supabase
         .from('users')
         .insert([{
-          name,
-          surname,
-          email,
+          name: req.body.name,
+          surname: req.body.surname,
+          email: req.body.email,
           password_hash,
           profile_id: 1,
           created_at: new Date().toISOString(),
@@ -97,32 +95,19 @@ class UserSupabaseController {
         .select()
         .maybeSingle();
 
-      if (createError || !created) {
-        return res.status(500).json({ error: 'Erro ao criar usuário.', details: createError?.message });
+      if (createError || !user) {
+        return res.status(500).json({ message: 'Erro ao criar usuário.', details: createError?.message });
       }
 
-      const { data: profile } = await supabase
-        .from('profiles')
-        .select('id, name')
-        .eq('id', created.profile_id)
-        .maybeSingle();
-
-      const { data: address } = created.address_id
-        ? await supabase.from('addresses').select('id, address_name, country, state, city, cep').eq('id', created.address_id).maybeSingle()
-        : { data: null };
-
-      const { data: contact } = created.contact_id
-        ? await supabase.from('contacts').select('id, telephone, smartphone').eq('id', created.contact_id).maybeSingle()
-        : { data: null };
+      // Gera token JWT
+      const { id, name, surname, email, profile_id } = user;
+      const token = jwt.sign({ id, profile_id }, authConfig.secret, {
+        expiresIn: authConfig.expiresIn,
+      });
 
       return res.json({
-        id: created.id,
-        name: created.name,
-        surname: created.surname,
-        email: created.email,
-        profile,
-        address,
-        contact,
+        user: { id, name, surname, email, profile_id },
+        token,
       });
 
     } catch (error) {
